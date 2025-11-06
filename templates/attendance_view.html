@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Attendance - {{ student.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .card {
+      background: #fff;
+      padding: 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+      max-width: 1000px;
+      margin: 2rem auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef6ff;
+    }
+  </style>
+</head>
+<body>
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<div class="card">
+  <h2>Attendance for {{ student.name }} ({{ student.roll }})</h2>
+
+  {% if records %}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Subject</th>
+          <th>Type</th>
+          <th>Group</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rec in records %}
+          <tr>
+            <td>{{ rec.session.date }}</td>
+            <td>{{ rec.session.subject.name }}</td>
+            <td>{{ rec.session.subject_type }}</td>
+            <td>{{ rec.session.group_flag }}</td>
+            <td>{{ 'Present' if rec.present else 'Absent' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No attendance records found.</p>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Reports</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f7f7f9; padding:20px; }
+    .card { max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    h1 { margin-top:0; font-size:20px; }
+    form { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    select, button { padding:10px; border-radius:6px; border:1px solid #ccc; }
+    .summary { margin-top:20px; padding:14px; background:#fbfbfb; border-radius:8px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#fafafa; font-weight:600; }
+    .small { font-size:13px; color:#666; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📊 Student Reports</h1>
+
+    <form method="POST">
+      <label for="student_id">Select student</label>
+      <select name="student_id" id="student_id" required>
+        <option value="">-- choose student --</option>
+        {% for s in students %}
+          <option value="{{ s.id }}" {% if selected_student and s.id == selected_student.id %}selected{% endif %}>
+            {{ s.roll }} — {{ s.name }} {% if s.group %} (Group {{ s.group }}){% endif %}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit">Show Report</button>
+    </form>
+
+    {% if selected_student %}
+      <div class="summary">
+        <h3>{{ selected_student.name }} <span class="small">({{ selected_student.roll }})</span></h3>
+
+        <p>
+          <strong>Attendance:</strong>
+          {% if attendance_summary %}
+            {{ attendance_summary.attended }} / {{ attendance_summary.total }}
+          {% else %}
+            No attendance records found.
+          {% endif %}
+        </p>
+
+        <p>
+          <strong>Assignments:</strong>
+          {% if assignment_summary %}
+            {{ assignment_summary.submitted }} / {{ assignment_summary.total }}
+          {% else %}
+            No assignment records found.
+          {% endif %}
+        </p>
+      </div>
+
+      {% if per_subject_attendance %}
+        <h4 style="margin-top:20px">Attendance by Subject</h4>
+        <table>
+          <thead>
+            <tr><th>Subject</th><th>Present</th><th>Total</th><th>Percent</th></tr>
+          </thead>
+          <tbody>
+            {% for row in per_subject_attendance %}
+              <tr>
+                <td>{{ row.subject_name }}</td>
+                <td>{{ row.present }}</td>
+                <td>{{ row.total }}</td>
+                <td>
+                  {% if row.total > 0 %}
+                    {{ ((row.present / row.total) * 100)|round(1) }}%
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+
+      {% if per_subject_assignments %}
+        <h4 style="margin-top:20px">Assignments by Subject</h4>
+        <table>
+          <thead>
+            <tr><th>Subject</th><th>Submitted</th><th>Total</th><th>Percent</th></tr>
+          </thead>
+          <tbody>
+            {% for row in per_subject_assignments %}
+              <tr>
+                <td>{{ row.subject_name }}</td>
+                <td>{{ row.submitted }}</td>
+                <td>{{ row.total }}</td>
+                <td>
+                  {% if row.total > 0 %}
+                    {{ ((row.submitted / row.total) * 100)|round(1) }}%
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+</html>

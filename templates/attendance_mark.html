@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Upload Attendance - {{ cr.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      background: #f5f8ff;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      max-width: 1000px;
+      margin: 2rem auto;
+    }
+
+    h2 { color: #333; margin-bottom: 1rem; }
+
+    label { font-weight: 600; margin-bottom: 0.3rem; display:block; }
+
+    select, input[type="date"] {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input[type="date"]:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .student-list {
+      max-height: 350px;
+      overflow:auto;
+      border:1px solid #eef6ff;
+      padding:10px;
+      border-radius:8px;
+      background: #fafcff;
+      margin-top: 0.5rem;
+    }
+
+    .student-item {
+      padding:8px 6px;
+      border-bottom:1px dashed #d9e2ff;
+      display:flex;
+      align-items:center;
+    }
+
+    .student-item:last-child { border-bottom:none; }
+
+    .student-item input { margin-right: 10px; }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #4a90e2;
+      color: white;
+      cursor: pointer;
+      margin-left: 0.3rem;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: #357ab7; }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #eef6ff;
+      margin: 1.5rem 0;
+    }
+
+    .login-btn {
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      background: #28a745;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover { background: #1e7e34; }
+
+    @media(max-width: 700px) {
+      .form-row { flex-direction: column; }
+    }
+  </style>
+
+  <script>
+    function toggleGroup() {
+      var type = document.getElementById('subject_type').value;
+      var group = document.getElementById('group_choice');
+      var groupContainer = group.parentElement;
+      if (type === 'Practical') {
+        groupContainer.style.display = 'block';
+        filterStudents(); // filter students immediately
+      } else {
+        groupContainer.style.display = 'none';
+        group.value = 'ALL';
+        filterStudents();
+      }
+    }
+
+    function filterStudents() {
+      var selectedGroup = document.getElementById('group_choice').value;
+      var items = document.querySelectorAll('.student-item');
+      items.forEach(item => {
+        var group = item.dataset.group;
+        if (selectedGroup === 'ALL' || group === selectedGroup) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+          item.querySelector('input').checked = false;
+        }
+      });
+    }
+
+    function toggleSelectAll(checked) {
+      var boxes = document.querySelectorAll('.student-item input');
+      boxes.forEach(b => {
+        if(b.parentElement.style.display !== 'none') {
+          b.checked = checked;
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<div class="card">
+  <h2>Upload Attendance — CR: {{ cr.name }}</h2>
+
+  <form method="post">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Subject</label>
+        <select name="subject" required>
+          <option value="">--select--</option>
+          {% for s in subjects %}
+            <option value="{{ s.id }}">{{ s.name }} ({{ s.subject_type }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Professor</label>
+        <select name="professor" required>
+          <option value="">--select--</option>
+          {% for p in professors %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Subject Type</label>
+        <select name="subject_type" id="subject_type" onchange="toggleGroup()" required>
+          <option value="Theory">Theory</option>
+          <option value="Practical">Practical</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="display:none;">
+        <label>Group Choice</label>
+        <select name="group_choice" id="group_choice" onchange="filterStudents()">
+          <option value="ALL">All</option>
+          <option value="A">Group A</option>
+          <option value="B">Group B</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" required>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+        <h3>Students</h3>
+        <div class="btn-group">
+          <button type="button" class="btn" onclick="toggleSelectAll(true)">Select All</button>
+          <button type="button" class="btn" onclick="toggleSelectAll(false)">Clear</button>
+        </div>
+      </div>
+
+      <div class="student-list">
+        {% for s in students %}
+          <div class="student-item" data-group="{{ s.group }}">
+            <label>
+              <input type="checkbox" name="present_students" value="{{ s.id }}">
+              {{ s.roll }} — {{ s.name }} ({{ s.group }})
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <br>
+    <button type="submit" class="login-btn">Submit Attendance</button>
+  </form>
+</div>
+</body>
+</html>

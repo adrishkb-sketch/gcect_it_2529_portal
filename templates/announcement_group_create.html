@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Group Announcement — CR Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header.navbar {
+      background: #2a9d8f;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header.navbar h1 { margin: 0; font-size: 1.5rem; }
+    header.navbar nav a { color: #fff; margin-left: 1rem; text-decoration: none; font-weight: bold; }
+    header.navbar nav a.active { text-decoration: underline; }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    h2 { color: #264653; margin-bottom: 1.5rem; }
+    label { display: block; margin: 0.5rem 0 0.3rem 0; font-weight: 600; color: #264653; }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+    button.btn { background: #2a9d8f; color: #fff; border: none; cursor: pointer; transition: 0.3s; }
+    button.btn:hover { background: #21867a; }
+
+    .flash { padding: 0.5rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+    .flash-success { background: #4caf50; color: #fff; }
+    .flash-error { background: #f44336; color: #fff; }
+
+    @media(max-width: 600px) {
+      header.navbar { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <h1>GCECT IT 2025–2029 Portal</h1>
+  <nav>
+      <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Create Group Announcement</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" enctype="multipart/form-data">
+      <label>Select Group</label>
+      <select name="group" required>
+        <option value="">-- Select Group --</option>
+        <option value="A">Group A</option>
+        <option value="B">Group B</option>
+      </select>
+
+      <label>Title</label>
+      <input type="text" name="title" placeholder="Enter announcement title" required>
+
+      <label>Description</label>
+      <textarea name="description" placeholder="Enter announcement details" required></textarea>
+
+      <label>Attachment (optional)</label>
+      <input type="file" name="attachment">
+
+      <button type="submit" class="btn">Post Announcement</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

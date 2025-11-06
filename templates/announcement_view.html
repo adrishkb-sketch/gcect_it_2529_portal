@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements — Student</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f7f8; margin:0; padding:0;}
+    .container { max-width:900px; margin:2rem auto; padding:1rem; }
+    .card { background:#fff; padding:1.5rem; border-radius:12px; margin-bottom:1rem; box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+    h2 { margin-top:0; color:#264653; }
+    p { margin:0.5rem 0; }
+    a.download { display:inline-block; margin-top:0.5rem; color:#007bff; text-decoration:none; }
+    a.download:hover { text-decoration:underline; }
+    .timestamp { color:#888; font-size:0.85rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Announcements</h1>
+
+  {% if announcements %}
+    {% for ann in announcements %}
+      <div class="card">
+        <h2>{{ ann.title }}</h2>
+        <p>{{ ann.description }}</p>
+        <p class="timestamp">{{ ann.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+        {% if ann.filename %}
+          <a class="download" href="{{ url_for('announcement_download', announcement_id=ann.id) }}">Download Attachment</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No announcements posted yet.</p>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignment Responses</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f8; margin:0; padding:0; }
+    header.navbar { background:#264653; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+    header.navbar nav a { color:#fff; margin-left:1rem; text-decoration:none; font-weight:bold; }
+    header.navbar nav a.active { text-decoration:underline; }
+    .card { background:#fff; padding:2rem; border-radius:12px; max-width:800px; margin:2rem auto; box-shadow:0 6px 18px rgba(0,0,0,0.07); }
+    select, button { padding:8px 10px; margin:0.5rem 0; border-radius:6px; border:1px solid #ccc; }
+    button.login-btn { background:#264653; color:#fff; padding:0.6rem 1.2rem; border:none; border-radius:8px; cursor:pointer; margin-top:1rem; }
+    button.login-btn:hover { background:#1e3f44; }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <h1>GCECT IT 2025–2029 Portal</h1>
+  <nav>
+      <a href="{{ url_for('dashboard_professor') if role=='professor' else url_for('dashboard_admin') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
+
+<div class="card">
+  <h2>Download Assignment Responses</h2>
+  <form method="post">
+    <label>Professor</label>
+    <select name="professor_id" required onchange="this.form.submit()">
+      <option value="">--Select Professor--</option>
+      {% for p in professors %}
+        <option value="{{ p.id }}" {% if p.id == selected_professor_id %}selected{% endif %}>{{ p.name }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Assignment</label>
+    <select name="assignment_id" {% if not assignments %}disabled{% endif %} onchange="this.form.submit()">
+      <option value="">--Select Assignment--</option>
+      {% for a in assignments %}
+        <option value="{{ a.id }}" {% if a.id == selected_assignment_id %}selected{% endif %}>{{ a.title }}</option>
+      {% endfor %}
+    </select>
+
+    {% if selected_assignment %}
+      <button type="submit" name="download" class="login-btn">Download Responses (ZIP)</button>
+    {% endif %}
+  </form>
+</div>
+</body>
+</html>

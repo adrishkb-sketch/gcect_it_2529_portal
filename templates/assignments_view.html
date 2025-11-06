@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignments — Student</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header.navbar {
+      background: #264653;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header.navbar h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    header.navbar nav a {
+      color: #fff;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header.navbar nav a.active {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      color: #264653;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #eef6ff;
+      text-align: left;
+    }
+
+    th {
+      background: #f5f8ff;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f0f4ff;
+    }
+
+    .status-pending { color: #ff9800; font-weight: 600; }
+    .status-submitted { color: #2196f3; font-weight: 600; }
+    .status-completed { color: #4caf50; font-weight: 600; }
+    .status-missed { color: #f44336; font-weight: 600; }
+
+    .btn-upload {
+      background: #007bff;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.3s;
+    }
+
+    .btn-upload:hover { background: #0056b3; }
+
+    .uploaded-file {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    @media(max-width: 600px) {
+      header.navbar { flex-direction: column; text-align: center; }
+      header.navbar nav { margin-top: 0.5rem; }
+      table, th, td { font-size: 0.9rem; }
+      input[type="file"] { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <h1>GCECT IT 2025–2029 Portal</h1>
+  <nav>
+      <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Assignments</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if assignments %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Upload</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in assignments %}
+            {% set sub = submissions.get(a.id) %}
+            {% set status = sub.status if sub else 'Pending' %}
+            <tr>
+              <td>{{ a.title }}</td>
+              <td>{{ a.assignment_type|capitalize }}</td>
+              <td>{{ a.due_date }}</td>
+              <td class="status-{{ status|lower }}">{{ status|capitalize }}</td>
+              <td>
+                {% if a.assignment_type=='Online' %}
+                  {% if status=='Pending' %}
+                    <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_assignment', assignment_id=a.id) }}">
+                      <input type="file" name="file" required>
+                      <button type="submit" class="btn-upload">Upload</button>
+                    </form>
+                  {% else %}
+                    <span class="uploaded-file">Submitted: {{ sub.filename if sub else '' }}</span>
+                  {% endif %}
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No assignments available.</p>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

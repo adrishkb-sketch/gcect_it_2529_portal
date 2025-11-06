@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Students</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-login">
+
+<header class="navbar">
+    <h1>Admin Portal - Manage Students</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_admin') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<main class="dashboard-container">
+
+    <!-- Add New Student Form -->
+    <div class="dashboard-card">
+        <h3>Add / Edit Student</h3>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="input-group">
+                <label>{{ form.name.label }}</label>
+                {{ form.name(class_='input-field') }}
+            </div>
+            <div class="input-group">
+                <label>{{ form.roll.label }}</label>
+                {{ form.roll(class_='input-field') }}
+            </div>
+            <div class="input-group">
+                <label>{{ form.password.label }}</label>
+                {{ form.password(class_='input-field') }}
+            </div>
+            <div class="input-group">
+                <label>{{ form.group.label }}</label>
+                {{ form.group(class_='input-field') }}
+            </div>
+            <div class="input-group">
+                <label>{{ form.is_cr.label }}</label>
+                {{ form.is_cr() }}
+            </div>
+            <button type="submit" class="login-btn">Submit</button>
+        </form>
+    </div>
+
+    <!-- Student List -->
+    <div class="dashboard-card">
+        <h3>Existing Students</h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color:#f0f6ff;">
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Group</th>
+                    <th>CR</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr style="border-bottom:1px solid #ccc;">
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.roll }}</td>
+                    <td>{{ student.group }}</td>
+                    <td>{{ "Yes" if student.is_cr else "No" }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_student', student_id=student.id) }}">Edit</a> |
+                        <a href="{{ url_for('delete_student', student_id=student.id) }}" onclick="return confirm('Are you sure?');">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+</body>
+</html>

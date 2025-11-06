@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Attendance Report</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>.card{background:#fff;padding:1.2rem;border-radius:12px;max-width:1000px;margin:2rem auto;}</style>
+</head>
+<body>
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_professor') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<div class="card">
+  <h2>Attendance Report (Professor)</h2>
+  <form method="post">
+    <label>Professor</label><br>
+    <select name="professor" required>
+      <option value="">--select--</option>
+      {% for p in professors %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+    </select><br><br>
+
+    <label>Subject</label><br>
+    <select name="subject" required>
+      <option value="">--select--</option>
+      {% for s in subjects %}<option value="{{ s.id }}">{{ s.name }} ({{ s.subject_type }})</option>{% endfor %}
+    </select><br><br>
+
+    <label>Subject Type</label><br>
+    <select name="subject_type" required>
+      <option value="Theory">Theory</option>
+      <option value="Practical">Practical</option>
+    </select><br><br>
+
+    <label>Date</label><br>
+    <input type="date" name="date" required><br><br>
+
+
+    <button type="submit" name="download" class="login-btn">Download PDF</button>
+  </form>
+
+  {% if sessions %}
+    <hr>
+    {% for s in sessions %}
+      <h4>{{ s.subject.name }} — {{ s.group_flag }} — {{ s.date }}</h4>
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr><th>Roll</th><th>Name</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for r in s.records.order_by(AttendanceRecord.id).all() %}
+            <tr>
+              <td>{{ r.student.roll }}</td>
+              <td>{{ r.student.name }}</td>
+              <td>{{ 'Present' if r.present else 'Absent' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+  {% endif %}
+</div>
+</body>
+</html>

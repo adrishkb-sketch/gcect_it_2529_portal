@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_student', student_id=student.id) }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<main class="dashboard-container">
+
+    <!-- Personal Info -->
+    <section class="dashboard-card">
+        <h2>Hello, {{ student.name }}</h2>
+        <p><strong>Roll:</strong> {{ student.roll }}</p>
+        <p><strong>Group:</strong> {{ student.group }}</p>
+    </section>
+
+    <!-- Attendance Section -->
+    <section class="dashboard-card">
+    <h3><a href="{{ url_for('attendance_view', student_id=student.id) }}">Attendance</a></h3>
+
+    <div class="progress-circle-container">
+        <div class="progress-circle" style="--percentage: {{ attendance_percentage }};">
+            <div class="progress-value">{{ attendance_percentage }}%</div>
+        </div>
+        <p>{{ attended_classes }}/{{ total_classes }} classes attended</p>
+    </div>
+
+    {% if attendance %}
+        <ul>
+            {% for record in attendance %}
+                <li>{{ record.session.date }} — {{ record.session.subject.name }} — {{ 'Present' if record.present else 'Absent' }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p></p>
+    {% endif %}
+</section>
+
+
+
+    <!-- Assignments Section -->
+    <section class="dashboard-card">
+    <h3><a href="{{ url_for('assignments_view') }}">Assignments</a></h3>
+
+    <div class="assignment-summary">
+        <p><strong>{{ completed_assignments }}/{{ total_assignments }}</strong> assignments submitted</p>
+    </div>
+
+    {% if assignments %}
+        <ul>
+            {% for a in assignments %}
+                <li>{{ a.subject }} — {{ a.title }} (Due: {{ a.due_date }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p></p>
+    {% endif %}
+</section>
+
+
+    <!-- Announcements Section -->
+    <section class="dashboard-card">
+        <h3><a href="{{ url_for('announcement_view') }}">Announcements</a></h3>
+        {% if announcements %}
+            <ul>
+                {% for ann in announcements %}
+                    <li>{{ ann.created_at.strftime("%d-%m-%Y %H:%M") }} — {{ ann.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p></p>
+        {% endif %}
+    </section>
+
+    <!-- ✅ FIXED LINE BELOW -->
+    <section class="dashboard-card">
+        <h3><a href="{{ url_for('announcement_group_view', group=student.group) }}">Group Announcements</a></h3>
+        {% if announcements %}
+            <ul>
+                {% for ann in announcements %}
+                    <li>{{ ann.created_at.strftime("%d-%m-%Y %H:%M") }} — {{ ann.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p></p>
+        {% endif %}
+    </section>
+
+    {% if student.is_cr %}
+    <div class="dashboard-card">
+        <h3>CR Options</h3>
+        <ul>
+            <li><a href="{{ url_for('announcement_group_create') }}">Post Group Announcement</a></li>
+            <li><a href="{{ url_for('attendance_mark', cr_id=student.id) }}">Upload Attendance</a></li>
+            <li><a href="{{ url_for('assignments_mark') }}">Mark Assignments</a></li>
+        </ul>
+    </div>
+    {% endif %}
+
+</main>
+
+</body>
+</html>

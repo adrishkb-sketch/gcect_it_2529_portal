@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Announcements — Student</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f8; margin: 0; padding: 0; }
+    header.navbar { background: #264653; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    header.navbar h1 { margin: 0; font-size: 1.5rem; }
+    header.navbar nav a { color: #fff; margin-left: 1rem; text-decoration: none; font-weight: bold; }
+    header.navbar nav a.active { text-decoration: underline; }
+    .container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
+    .card { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); margin-bottom: 1rem; }
+    h2 { color: #264653; margin-bottom: 1rem; }
+    p { margin: 0.3rem 0; }
+    .attachment { margin-top: 0.5rem; }
+    .attachment a { text-decoration: none; color: #007bff; }
+    .attachment a:hover { text-decoration: underline; }
+    .datetime { font-size: 0.85rem; color: #555; margin-bottom: 0.5rem; }
+    @media(max-width:600px) { header.navbar { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <h1>GCECT IT 2025–2029 Portal</h1>
+  <nav>
+      <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>Group Announcements</h2>
+
+  {% if announcements %}
+    {% for ann in announcements|sort(attribute='created_at', reverse=True) %}
+      <div class="card">
+        <div class="datetime">{{ ann.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+        <h3>{{ ann.title }}</h3>
+        <p>{{ ann.description }}</p>
+        {% if ann.filename %}
+          <div class="attachment">
+            <a href="{{ url_for('static', filename='uploads/group_announcements/' + ann.filename) }}" download>Download Attachment</a>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No group announcements yet.</p>
+  {% endif %}
+</div>
+</body>
+</html>

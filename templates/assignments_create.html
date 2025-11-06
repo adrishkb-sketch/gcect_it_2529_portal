@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Assignment — {{ professor.name if professor else "Portal" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header.navbar {
+            background: #2a9d8f;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header.navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        header.navbar nav a {
+            color: #fff;
+            margin-left: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        header.navbar nav a.active {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #264653;
+            margin-bottom: 1.5rem;
+        }
+
+        form div.form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: #264653;
+        }
+
+        input[type="text"], input[type="date"], select, input[type="file"] {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        select {
+            background: #fff;
+            cursor: pointer;
+        }
+
+        input[type="file"] {
+            padding: 0.2rem;
+        }
+
+        button.btn {
+            background: #2a9d8f;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button.btn:hover {
+            background: #21867a;
+        }
+
+        .flash {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .flash-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media(max-width: 600px) {
+            header.navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header.navbar nav {
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_professor') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>Create New Assignment</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash flash-{{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.subject.label }}
+                {{ form.subject(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.professor.label }}
+                {{ form.professor(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.due_date.label }}
+                {{ form.due_date(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.assignment_type.label }}
+                {{ form.assignment_type(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.document.label }}
+                {{ form.document(class_="") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class_="btn") }}
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

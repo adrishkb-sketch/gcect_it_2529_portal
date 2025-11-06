@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>Admin Login</title>
+</head>
+<body class="admin-login">
+  <div class="container">
+    <div class="login-box">
+      <h1 class="logo">GCECT IT 25-29</h1>
+      <h2>Admin Login</h2>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="input-group">
+          <label>{{ form.username.label }}</label><br>
+          {{ form.username(class_='input-field', placeholder='Enter Username') }}
+        </div>
+
+        <div class="input-group">
+          <label>{{ form.password.label }}</label><br>
+          {{ form.password(class_='input-field', placeholder='Enter Password') }}
+        </div>
+
+        <div style="margin-top:8px;">
+          {{ form.submit(class_='login-btn') }}
+        </div>
+      </form>
+
+      <div class="login-options">
+        <p>Student? <a href="{{ url_for('login_student') }}">Student Login</a></p>
+        <p>Professor? <a href="{{ url_for('login_professor') }}">Professor Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>© GCECT IT 25-29</footer>
+
+</body>
+</html>

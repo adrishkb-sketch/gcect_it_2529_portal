@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Edit Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>.card{background:#fff;padding:1.2rem;border-radius:12px;max-width:1000px;margin:2rem auto;}</style>
+</head>
+<body>
+<header class="navbar">
+    <h1>GCECT IT 2025–2029 Portal</h1>
+    <nav>
+        <a href="{{ url_for('dashboard_admin') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<div class="card">
+  <h2>Edit Attendance (Admin)</h2>
+
+  <form method="post">
+    <label>Professor</label><br>
+    <select name="professor" required>
+      <option value="">--select--</option>
+      {% for p in professors %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+    </select><br><br>
+
+    <label>Subject</label><br>
+    <select name="subject" required>
+      <option value="">--select--</option>
+      {% for s in subjects %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}
+    </select><br><br>
+
+    <label>Date</label><br>
+    <input type="date" name="date" required><br><br>
+
+    <button type="submit" name="search" class="login-btn">Search</button>
+  </form>
+
+  {% if session %}
+    <hr>
+    <h3>Session: {{ session.subject.name }} — {{ session.date }} — Group: {{ session.group_flag }}</h3>
+    <form method="post">
+      <input type="hidden" name="session_id" value="{{ session.id }}">
+      {% for r in records %}
+        <p>{{ r.student.roll }} — {{ r.student.name }}
+          <select name="status_{{ r.id }}">
+            <option value="Present" {% if r.present %}selected{% endif %}>Present</option>
+            <option value="Absent" {% if not r.present %}selected{% endif %}>Absent</option>
+          </select>
+        </p>
+      {% endfor %}
+      <button type="submit" name="update" class="login-btn">Update Attendance</button>
+    </form>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | GCECT IT 25-29</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+    <header class="navbar">
+        <h1>GCECT IT 2025–2029 Portal</h1>
+        <nav>
+            <a href="{{ url_for('dashboard_admin', admin_id=admin.id) }}" class="active">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container dashboard">
+        <h2>Hello, Admin 👋</h2>
+        <p class="subtitle">Welcome to your control center</p>
+
+        <div class="cards-grid">
+            <div class="card">
+                <h3>👩‍🎓 Students</h3>
+                <p>View, add, or remove student records.</p>
+                <a href="{{ url_for('manage_students') }}" class="btn">Manage Students</a>
+            </div>
+
+            <div class="card">
+                <h3>👨‍🏫 Professors</h3>
+                <p>View and manage professor details.</p>
+                <!-- ✅ Fixed link below -->
+                <a href="{{ url_for('manage_professors') }}" class="btn">Manage Professors</a>
+            </div>
+
+            <div class="card">
+                <h3>📚 Subjects</h3>
+                <p>Review and edit subjects or types.</p>
+                <a href="{{ url_for('manage_subjects') }}" class="btn">Manage Subjects</a>
+            </div>
+
+            <div class="card">
+    <h3>⚙️ Clear</h3>
+    <p>Clear All Data</p>
+    <a href="{{ url_for('delete_everything') }}" class="btn" onclick="return confirm('⚠️ Are you sure you want to delete all attendance, assignments, and announcements? This action cannot be undone!');">
+        Delete Everything
+    </a>
+</div>
+
+
+            <div class="card">
+                <h3>📢 Announcements</h3>
+                <p>Create Announcements</p>
+                <a href="{{ url_for('announcement_create') }}" class="btn">Make one</a>
+            </div>
+
+            <div class="card">
+    <h3>📅 Attendance</h3>
+    <p>Edit Attendance</p>
+    <a href="{{ url_for('attendance_edit') }}" class="btn">Correct Attendance</a>
+</div>
+
+
+            <div class="card">
+                <h3>💪🏻 Assignment</h3>
+                <p>Create Assignments</p>
+                <a href="{{ url_for('assignments_create') }}" class="btn">Make assignments</a>
+            </div>
+            <div class="card">
+                <h3>✍️ Assignment Edit</h3>
+                <p>Edit Assignment Status</p>
+                <a href="{{ url_for('assignments_edit') }}" class="btn">Edit Assignment Status of students</a>
+            </div>
+
+            <div class="card">
+                <h3>💪🏻Download Assignment</h3>
+                <p>Download assignment responses here</p>
+                <a href="{{ url_for('assignments_response') }}" class="btn">Download in zip file</a>
+            </div>
+
+            <div class="card">
+                <h3>📊 Reports</h3>
+                <p>Analyze student performance and progress.</p>
+                <a href="{{ url_for('reports') }}" class="btn">View Reports</a>
+            </div>
+
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 GCECT IT 25-29 | Admin Portal</p>
+    </footer>
+</body>
+</html>

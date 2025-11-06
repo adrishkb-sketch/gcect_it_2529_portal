@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark Assignments — CR Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header.navbar {
+      background: #2a9d8f;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header.navbar h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    header.navbar nav a {
+      color: #fff;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header.navbar nav a.active {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      color: #264653;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.3rem 0;
+      font-weight: 600;
+      color: #264653;
+    }
+
+    select, button {
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #eef6ff;
+      text-align: left;
+    }
+
+    th {
+      background: #f5f8ff;
+    }
+
+    tr:hover {
+      background: #f0f4ff;
+    }
+
+    button.btn {
+      background: #2a9d8f;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+      margin-top: 1rem;
+    }
+
+    button.btn:hover {
+      background: #21867a;
+    }
+
+    .flash {
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .flash-success { background: #d4edda; color: #155724; }
+    .flash-danger { background: #f8d7da; color: #721c24; }
+    .flash-warning { background: #fff3cd; color: #856404; }
+
+    @media(max-width: 600px) {
+      header.navbar {
+        flex-direction: column;
+        text-align: center;
+      }
+      header.navbar nav {
+        margin-top: 0.5rem;
+      }
+      table, th, td {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <h1>GCECT IT 2025–2029 Portal</h1>
+  <nav>
+      <a href="{{ url_for('dashboard_student') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Mark Offline Assignments</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post">
+      <!-- Professor Dropdown -->
+      <div class="form-group">
+        <label>Professor</label>
+        <select name="professor" required onchange="this.form.submit()">
+          <option value="">-- Select Professor --</option>
+          {% for p in form.professor.choices %}
+            <option value="{{ p[0] }}" {% if selected_prof_id == p[0] %}selected{% endif %}>
+              {{ p[1] }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Assignment Dropdown -->
+      <div class="form-group">
+        <label>Assignment</label>
+        <select name="assignment" required onchange="this.form.submit()">
+          <option value="">-- Select Assignment --</option>
+          {% for a in assignments %}
+            <option value="{{ a.id }}" {% if selected_assignment and selected_assignment.id == a.id %}selected{% endif %}>
+              {{ a.title }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Student Status Table -->
+      {% if students %}
+        <table>
+          <thead>
+            <tr>
+              <th>Roll</th>
+              <th>Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in students %}
+              <tr>
+                <td>{{ s.roll }}</td>
+                <td>{{ s.name }}</td>
+                <td>
+                  <select name="status_{{ s.id }}">
+                    <option value="Pending" {% if s.status=='Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Submitted" {% if s.status=='Submitted' %}selected{% endif %}>Submitted</option>
+                    <option value="Completed" {% if s.status=='Completed' %}selected{% endif %}>Completed</option>
+                  </select>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <button type="submit" name="update" class="btn">Update Status</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+</body>
+</html>
